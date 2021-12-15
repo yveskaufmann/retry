@@ -25,7 +25,7 @@ jobs:
           CUR_VERSION=$(jq -r .version package.json)
           NEW_VERSION=$(echo "${NEW_VERSION}" | sed 's/^v//')
 
-          echo "NEW VERSION: ${NEW_VERSION}""
+          echo "NEW VERSION: ${NEW_VERSION}"
 
           if [[ NEW_VERSION != CUR_VERSION ]]; then 
             jq --arg VERSION "${NEW_VERSION}" '.version = $VERSION' package.json > tmp.package.json
