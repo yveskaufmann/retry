@@ -4,10 +4,22 @@ SHELL := bash
 
 .PHONY: build
 build: node_modules
+ifeq ($(CI), true)
 	npx tsc -p tsconfig.build.json
+else
+	npx tsc -p .
+endif
+
+.PHONY: clean
+clean:
+	rm -rf dist
 
 node_modules: package.json package-lock.json
+ifeq ($(CI), true)
+	npm ci
+else
 	npm install
+endif
 
 .PHONY: test
 test:
@@ -17,6 +29,6 @@ test:
 test-watch:
 	$(MAKE) test TEST_ARGS=--watch
 
-.PHONY: clean
-clean:
-	rm -rf dist
+.PHONY: release
+release: build
+	npm publish
