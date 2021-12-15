@@ -29,6 +29,14 @@ test:
 test-watch:
 	$(MAKE) test TEST_ARGS=--watch
 
+.PHONY: lint
+lint:
+	npx eslint -c .eslintrc.js .
+
+.PHONY: lint-fix
+lint-fix:
+	npx eslint --fix -c .eslintrc.js .
+
 .PHONY: release
 release: build
 	npm publish --access public
