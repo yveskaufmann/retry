@@ -1,7 +1,8 @@
 .vscode 
 .github
-tsconfig*.json
 .editorconfig
+.eslintrc.js
+tsconfig*.json
 jest.config.js 
 Makefile
  
