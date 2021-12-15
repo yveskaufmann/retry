@@ -12,7 +12,9 @@ Utility for retrying promise based operation on certain situations.
 
 ## Installation
 
-  npm install @yveskaufmann/retry
+```sh 
+npm install @yveskaufmann/retry
+```
 
 ## Usage
 
