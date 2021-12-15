@@ -175,7 +175,7 @@ export class MaxRetryAttemptsReached extends Error {
     super(message);
     this.cause = cause;
     if (cause) {
-      this.message += ` Caused by thrown error: ${cause.message}.`;
+      this.message += ` Caused by thrown error: ${cause.message}`;
     } else {
       this.message += ` Caused by: unfulfilled retry condition`;
     }
