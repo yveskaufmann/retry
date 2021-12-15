@@ -1,0 +1,34 @@
+{
+  "name": "@yveskaufmann/retry",
+  "version": "0.0.1",
+  "description": "Utility for retrying promise based operation on certain situations.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yveskaufmann/retry.git"
+  },
+  "keywords": [
+    "retry",
+    "promise",
+    "typescript",
+    "decorator"
+  ],
+  "author": "Yves Kaufmann",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yveskaufmann/retry/issues"
+  },
+  "homepage": "https://github.com/yveskaufmann/retry#readme",
+  "devDependencies": {
+    "@types/jest": "^27.0.3",
+    "@types/node": "^16.11.13",
+    "jest": "^27.4.5",
+    "ts-jest": "^27.1.1",
+    "typescript": "^4.5.4"
+  }
+}

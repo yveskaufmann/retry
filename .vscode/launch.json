@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Current Test",
+      "env": {
+        "LOG_LEVEL": "debug",
+        "NODE_ENV": "test"
+      },
+      "runtimeArgs": [
+        "--inspect-brk=9999",
+        "${workspaceFolder}/node_modules/.bin/jest",
+        "--testPathIgnorePatterns",
+        "--runInBand",
+        "--coverage",
+        "false",
+        "${relativeFile}"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": [
+        "<node_internals>/**/*.js",
+        "${workspaceFolder}/node_modules/jest/**/*"
+      ],
+      "sourceMaps": true,
+      "smartStep": false,
+      "port": 9999
+    },
+
+  ]
+}
