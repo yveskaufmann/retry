@@ -1,10 +1,10 @@
 # This workflow will release a new version of this package if a new github release was created.
 
-name: Release
+name: Release - Workflow
 
 on:
   release:
-    types: 
+    types:
       - published
 jobs:
   release:
