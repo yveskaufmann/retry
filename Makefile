@@ -31,4 +31,4 @@ test-watch:
 
 .PHONY: release
 release: build
-	npm publish
+	npm publish --access public
