@@ -1,3 +1,5 @@
+[![Node.js CI](https://github.com/yveskaufmann/retry/actions/workflows/ci.yml/badge.svg)](https://github.com/yveskaufmann/retry/actions/workflows/ci.yml)
+
 # retry-utility
 
 Utility for retrying promise based operation on certain situations.
