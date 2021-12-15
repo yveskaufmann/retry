@@ -4,11 +4,11 @@
 
 # @yveskaufmann/retry - retry-utility
 
-Utility for retrying promise based operation on certain situations.
+Utility for retrying promise based operation when a certain response or error is returned.
 
-* Provides an imperative API.
-* Class decorators to mark async functions to be retryable
-  Supports various backoff strategies: fixed, linear, exponential.
+* Provides an imperative API for non class methods
+* Class decorators to mark async methods to be retryable
+* Supports various backoff strategies: fixed, linear, exponential
 
 ## Installation
 
@@ -19,14 +19,12 @@ npm install @yveskaufmann/retry
 ## Usage
 
 The example below demonstrates how to annotate
-methods to mark them as retryable. When `retryWhen`
+methods to mark them as retriable. When `retryWhen`
 return `true` the method is retried until it reaches the
 `maxRetries` limit.
 
-When the retry limit is reached last result is returned
-or the last error is thrown.
-
-When the limit is reached the last result, or the last thrown
+When the retry limit is reached, the last return value is returned
+or the last thrown error is thrown.
 
 > NOTE: The Retryable annotation only works with methods that returning promises like async methods.
 
@@ -54,7 +52,7 @@ class Service {
 ```
 
 This utility can also be used without annotating
-class methods.
+class methods:
 
 ```typescript
  const response = await Retry.do({
