@@ -1,13 +1,14 @@
 {
   "name": "@yveskaufmann/retry",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Utility for retrying promise based operation on certain situations.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p .",
-    "test": "jest"
+    "build": "make build",
+    "test": "make test",
+    "lint": "make lint"
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,9 @@
     "retry",
     "promise",
     "typescript",
-    "decorator"
+    "decorator",
+    "resilient",
+    "async"
   ],
   "author": "Yves Kaufmann",
   "license": "MIT",
