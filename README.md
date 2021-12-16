@@ -64,8 +64,6 @@ This utility can also be used with async functions:
 
 ## API Reference
 
-The API is documented in the provided typescript definition file.
-
   - [RetryOptions](#retryoptions)
   - [Retry](#retry)
     - [Retry#Delays](#retrydelays)
