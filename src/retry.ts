@@ -1,5 +1,8 @@
 import { wait } from './wait';
 
+/**
+ * Options to configure a retriable operation.
+ */
 export interface RetryOptions<T> {
   /**
    * The maximum amount of times a operation should be re-tried. Excluding the initial attempt.
@@ -7,16 +10,17 @@ export interface RetryOptions<T> {
   maxRetries?: number;
 
   /**
-   * When set to true a MaxRetryAttemptsReached will be thrown if the max attempts of retries
-   * is reached.
+   * When set to true a MaxRetryAttemptsReached will be thrown if
+   * the retry attempt limit is reached.
    *
    * You should not use this option if you are interested into result/error that
-   * was produced by the operation in the last retry attempt.
+   * was produced by the operation.
    */
   throwMaxAttemptError?: boolean;
 
   /**
-   * Helps to identify the retryable operation in produced errors and logging.
+   * Helps to identify the retryable operation in errors
+   * and logging.
    */
   nameOfOperation?: string;
 
@@ -43,6 +47,9 @@ export interface RetryOptions<T> {
   delay?: (attempts: number, error?: Error) => number;
 }
 
+/**
+ * List of built-in delay strategies.
+ */
 class Delays {
   /**
    * No delay between retries
@@ -52,36 +59,48 @@ class Delays {
   }
 
   /**
-   * Constant delay between retries.
+   * Constant delay in milliseconds between retries.
    */
-  public constant(delay: number) {
-    return (attempts: number) => delay;
+  public constant(delayInMs: number) {
+    return (attempts: number) => delayInMs;
   }
 
   /**
    * Linear slope per attempt;
    */
-  public linear(delay: number) {
-    return (attempts: number) => attempts * delay;
+  public linear(delayInMs: number) {
+    return (attempts: number) => attempts * delayInMs;
   }
 
   /**
    * Quadratic slope per attempt
    */
-  public potential(delay: number) {
-    return (attempts: number) => Math.pow(2, Math.max(attempts - 1, 0)) * delay;
+  public potential(delayInMs: number) {
+    return (attempts: number) => Math.pow(2, Math.max(attempts - 1, 0)) * delayInMs;
   }
 }
 
+/**
+ * List of built-in retry conditions.
+ */
 class Conditions {
+  /**
+   * Retries a operation on any thrown error.
+   */
   public onAnyError() {
     return (result: unknown, err: Error) => err != null;
   }
 
+  /**
+   * Retries a operation in any case.
+   */
   public always() {
     return (result: unknown, err: Error) => true;
   }
 
+  /**
+   * Retries a operation if it returned a nullthy value.
+   */
   public onNullResult() {
     return (result: unknown, err: Error) => err == null && result == null;
   }
@@ -99,9 +118,22 @@ export class Retry {
   public static readonly Conditions = new Conditions();
 
   /**
+   * The do function invokes a given operation,
+   * and will re-invoke this operation if @link{RetryOptions#retryWhen}
+   * applied with the operation reults returns true.
    *
-   * @param param0
-   * @returns
+   * The operation will not further retried if the @link{RetryOptions#maxRetries}
+   * limit is reached, in this case either the return value
+   * from the previous operation invocation is returned or the error that
+   * was last thrown by invoked operation will be thrown by the do method.
+   *
+   * @param options Configuration of the retry options
+   *
+   * @throws MaxRetryAttemptsReached if the retry attempt limit is reached and the option @link{RetryOptions#throwMaxAttemptError}
+   * was enabled otherwise the error from the last invocation will be thrown.
+   *
+   * @returns The result of the last operation invocation.
+   *
    */
   public static async do<T>({
     operation,
@@ -160,7 +192,7 @@ export class Retry {
 
 /**
  * This error will be thrown if the maximum retry attempts of a
- * operation are reached.
+ * operation is reached buf only if @{link RetryOptions#throwMaxAttemptError} was set to true.
  */
 export class MaxRetryAttemptsReached extends Error {
   /**
@@ -186,6 +218,17 @@ export class MaxRetryAttemptsReached extends Error {
   }
 }
 
+/**
+ * This method decorator marks a method as retriable.
+ *
+ * It uses the same options as @{link Retry#do} with the execption
+ * that the operation is the annotated method.
+ *
+ * NOTE: That the annotated method have to be async or it should at east
+ * return a promise.
+ *
+ * @param options Configuration of the retry options
+ */
 export function Retryable(options: RetryOptions<unknown>): MethodDecorator {
   return function (target, property, descriptor: TypedPropertyDescriptor<any>) {
     if (typeof descriptor.value != 'function') {
