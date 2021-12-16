@@ -1,8 +1,8 @@
+# @yveskaufmann/retry - retry-utility
+
 [![npm version](https://badge.fury.io/js/@yveskaufmann%2Fretry.svg)](https://badge.fury.io/js/@yveskaufmann%2Fretry)
 [![Node.js CI](https://github.com/yveskaufmann/retry/actions/workflows/ci.yml/badge.svg)](https://github.com/yveskaufmann/retry/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/yveskaufmann/retry/branch/main/graph/badge.svg?token=QXZVS68R36)](https://codecov.io/gh/yveskaufmann/retry)
-
-# @yveskaufmann/retry - retry-utility
 
 Utility for retrying promise based operation when a certain response or error is returned.
 
