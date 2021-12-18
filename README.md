@@ -5,8 +5,6 @@
 [![codecov](https://codecov.io/gh/yveskaufmann/retry/branch/main/graph/badge.svg?token=QXZVS68R36)](https://codecov.io/gh/yveskaufmann/retry)
 [![CodeQL](https://github.com/yveskaufmann/retry/actions/workflows/codeql-analysis.yml/badge.svg?branch=main)](https://github.com/yveskaufmann/retry/actions/workflows/codeql-analysis.yml)
 
-# @yveskaufmann/retry - retry-utility
-
 Utility for retrying promise based operations when a certain response or error is returned.
 
 * Provides an imperative API for non class methods.
