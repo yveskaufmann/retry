@@ -5,11 +5,13 @@
 [![codecov](https://codecov.io/gh/yveskaufmann/retry/branch/main/graph/badge.svg?token=QXZVS68R36)](https://codecov.io/gh/yveskaufmann/retry)
 [![CodeQL](https://github.com/yveskaufmann/retry/actions/workflows/codeql-analysis.yml/badge.svg?branch=main)](https://github.com/yveskaufmann/retry/actions/workflows/codeql-analysis.yml)
 
-Utility for retrying promise based operation when a certain response or error is returned.
+# @yveskaufmann/retry - retry-utility
 
-* Provides an imperative API for non class methods
-* Class decorators to mark async methods to be retryable
-* Supports various backoff strategies: fixed, linear, exponential
+Utility for retrying promise based operations when a certain response or error is returned.
+
+* Provides an imperative API for non class methods.
+* Provides Class decorators to mark async functions as retirable.
+* Supports various backoff strategies: fixed, linear, exponential.
 
 ## Installation
 
@@ -19,15 +21,15 @@ npm install @yveskaufmann/retry
 
 ## Usage
 
-The example below demonstrates how to annotate
-methods to mark them as retriable. When `retryWhen`
-return `true` the method is retried until it reaches the
-`maxRetries` limit.
+The examples below show how to annotate
+methods to mark them as retirable. If `retryWhen`
+returns `true` then the method will retried.
+The limit of retries is given by `maxRetries`.
 
 When the retry limit is reached, the last return value is returned
 or the last thrown error is thrown.
 
-> NOTE: The Retryable annotation only works with methods that returning promises like async methods.
+> NOTE: The `Retryable` annotation only works with methods that return promise like async methods.
 
 ```typescript
 class Service {
@@ -97,7 +99,7 @@ interface RetryOptions<T> {
 
   /**
    * Helps to identify the retryable operation in errors 
-   * and loggings.
+   * and logs.
    */
   nameOfOperation?: string;
 
@@ -150,10 +152,10 @@ class Retry {
  /**
    * The do function invokes a given operation,
    * and will re-invoke this operation if 
-   * @link{RetryOptions#retryWhen} applied with the
-   * operation reults returns true.
-   *
-   * The operation will not further retried if the 
+   * @link{RetryOptions#retryWhen} returns true.
+   * (@link{RetryOptions#retryWhen} will be provided with the operations result)
+   * 
+   * The operation will not be further retried if the 
    * @link{RetryOptions#maxRetries} limit is reached, 
    * in this case either the return value from the previous 
    * operation invocation is returned or the error that
@@ -202,7 +204,7 @@ class Delays {
 ```
 
 A custom delay strategy can be created by implementing 
-a function that fulfill the interface below:
+a function that fulfills the interface below:
 
 ```typescript 
   /**
@@ -264,10 +266,10 @@ a function that fulfills the following interface:
 /**
  * This method decorator marks a method as retriable.
  *
- * It uses the same options as @{link Retry#do} with the execption
+ * It uses the same options as @{link Retry#do} with the exception
  * that the operation is the annotated method.
  *
- * NOTE: That the annotated method have to be async or it should at east
+ * NOTE: That the annotated method has to be async or it should at least
  * return a promise.
  *
  * @param options Configuration of the retry options
