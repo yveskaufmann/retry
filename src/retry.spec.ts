@@ -61,6 +61,16 @@ class DummyClass {
     return this.called();
   }
 
+  @Retryable({
+    retryWhen: Retry.Conditions.always(),
+    maxRetries: 3,
+    delay: Retry.Delays.linear(5),
+    maxDelay: 10,
+  })
+  public async testWithLimitedLinearDelay(): Promise<number> {
+    return this.called();
+  }
+
   public called(): number {
     return this.count++;
     // method is intended to spy on
@@ -148,6 +158,16 @@ describe('Retryable', () => {
     expect(setTimeout).toHaveBeenNthCalledWith(1, expect.any(Function), 5);
     expect(setTimeout).toHaveBeenNthCalledWith(2, expect.any(Function), 10);
     expect(setTimeout).toHaveBeenNthCalledWith(3, expect.any(Function), 15);
+  });
+
+  it('Do only wait for the specified `maxDelay`', async () => {
+    jest.spyOn(global, 'setTimeout');
+    await testClass.testWithLimitedLinearDelay();
+
+    expect(setTimeout).toHaveBeenCalledTimes(3);
+    expect(setTimeout).toHaveBeenNthCalledWith(1, expect.any(Function), 5);
+    expect(setTimeout).toHaveBeenNthCalledWith(2, expect.any(Function), 10);
+    expect(setTimeout).toHaveBeenNthCalledWith(3, expect.any(Function), 10);
   });
 });
 

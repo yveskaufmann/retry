@@ -65,12 +65,16 @@ This utility can also be used with async functions:
 
 ## API Reference
 
-  - [RetryOptions](#retryoptions)
-  - [Retry](#retry)
-    - [Retry#Delays](#retrydelays)
-    - [Retry#Conditions](#retryconditions)
-  - [Retryable](#retryable)
-  - [MaxRetryAttemptsReached](#maxretryattemptsreached)
+- [@yveskaufmann/retry - retry-utility](#yveskaufmannretry---retry-utility)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [API Reference](#api-reference)
+    - [RetryOptions](#retryoptions)
+    - [Retry](#retry)
+    - [RetryDelays](#retrydelays)
+    - [RetryConditions](#retryconditions)
+    - [Retryable](#retryable)
+    - [MaxRetryAttemptsReached](#maxretryattemptsreached)
 
 ### RetryOptions
 
@@ -100,6 +104,11 @@ interface RetryOptions<T> {
    * and logs.
    */
   nameOfOperation?: string;
+
+  /**
+   * The max number of milliseconds between two retries. Default is `Unlimited`
+   */
+  maxDelay?: number;
 
   /**
    * Defines the condition on which a operation should be 

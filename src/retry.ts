@@ -25,6 +25,11 @@ export interface RetryOptions<T> {
   nameOfOperation?: string;
 
   /**
+   * The max number of milliseconds between two retries. Default is `Unlimited`
+   */
+  maxDelay?: number;
+
+  /**
    * Defines the condition on which a operation should be retried a implementation
    * should return true if a retry is desired.
    *
@@ -142,6 +147,7 @@ export class Retry {
     delay,
     throwMaxAttemptError,
     nameOfOperation,
+    maxDelay,
   }: {
     operation: () => Promise<T>;
   } & RetryOptions<T>): Promise<T> {
@@ -170,7 +176,10 @@ export class Retry {
       attemptsLeft = attempts++ < maxRetries;
       shouldRetry = shouldRetry && attemptsLeft;
       if (shouldRetry) {
-        const delayDuration = delay(attempts, previousError);
+        let delayDuration = delay(attempts, previousError);
+        if (typeof maxDelay === 'number' && maxDelay > 0) {
+          delayDuration = Math.min(maxDelay, delayDuration);
+        }
         await wait(delayDuration);
       }
     } while (shouldRetry);
