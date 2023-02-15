@@ -137,6 +137,17 @@ interface RetryOptions<T> {
    * @returns A delay duration in  milliseconds.
    */
   delay?: (attempts: number, error?: Error) => number;
+
+  /**
+   * Will be invoked after each failed attempt.
+   * An atempt is to be considered failed, if the `retryWhen` classify a returned error/return-values as retryable.
+
+   * @param attempt The number of the attempt
+   * @param result The returned value from the retryable operation, that is considered be a reason to perform a retry
+   * @param err The cause of the failed attempt
+   * @returns
+   */
+  onFailedAttempt?: (attempt: number, result: T, err: Error) => void;
 }
 ```
 

@@ -1,86 +1,98 @@
 import { Retry, Retryable, MaxRetryAttemptsReached } from './retry';
 
-class DummyClass {
-  public count = 0;
-
-  constructor() {
-    this.count = 0;
-  }
-
-  @Retryable({
-    retryWhen: () => true,
-    maxRetries: 3,
-  })
-  public async testAttemptsExceedsRetries(): Promise<number> {
-    return this.called();
-  }
-
-  @Retryable({
-    retryWhen: () => true,
-    maxRetries: 3,
-    throwMaxAttemptError: true,
-  })
-  public async testThrowMaxAttemptError(): Promise<number> {
-    return this.called();
-  }
-
-  @Retryable({
-    retryWhen(result: any, error?: Error) {
-      return result < -1;
-    },
-    maxRetries: 3,
-  })
-  public async testDontRetry(): Promise<number> {
-    return this.called();
-  }
-
-  @Retryable({
-    retryWhen: Retry.Conditions.always(),
-    maxRetries: 3,
-    delay: Retry.Delays.none(),
-  })
-  public async testWithNoDelay(): Promise<number> {
-    return this.called();
-  }
-
-  @Retryable({
-    retryWhen: Retry.Conditions.always(),
-    maxRetries: 3,
-    delay: Retry.Delays.constant(5),
-  })
-  public async testWithConstantDelay(): Promise<number> {
-    return this.called();
-  }
-
-  @Retryable({
-    retryWhen: Retry.Conditions.always(),
-    maxRetries: 3,
-    delay: Retry.Delays.linear(5),
-  })
-  public async testWithLinearDelay(): Promise<number> {
-    return this.called();
-  }
-
-  @Retryable({
-    retryWhen: Retry.Conditions.always(),
-    maxRetries: 3,
-    delay: Retry.Delays.linear(5),
-    maxDelay: 10,
-  })
-  public async testWithLimitedLinearDelay(): Promise<number> {
-    return this.called();
-  }
-
-  public called(): number {
-    return this.count++;
-    // method is intended to spy on
-  }
-}
-
 describe('Retryable', () => {
+  const onAttemptMock = jest.fn();
+
+  class DummyClass {
+    public count = 0;
+
+    constructor() {
+      this.count = 0;
+    }
+
+    @Retryable({
+      retryWhen: () => true,
+      maxRetries: 3,
+    })
+    public async testAttemptsExceedsRetries(): Promise<number> {
+      return this.called();
+    }
+
+    @Retryable({
+      retryWhen: () => true,
+      maxRetries: 3,
+      throwMaxAttemptError: true,
+    })
+    public async testThrowMaxAttemptError(): Promise<number> {
+      return this.called();
+    }
+
+    @Retryable({
+      retryWhen(result: any, error?: Error) {
+        return result < -1;
+      },
+      maxRetries: 3,
+    })
+    public async testDontRetry(): Promise<number> {
+      return this.called();
+    }
+
+    @Retryable({
+      retryWhen: Retry.Conditions.always(),
+      maxRetries: 3,
+      delay: Retry.Delays.none(),
+    })
+    public async testWithNoDelay(): Promise<number> {
+      return this.called();
+    }
+
+    @Retryable({
+      retryWhen: Retry.Conditions.always(),
+      maxRetries: 3,
+      delay: Retry.Delays.constant(5),
+    })
+    public async testWithConstantDelay(): Promise<number> {
+      return this.called();
+    }
+
+    @Retryable({
+      retryWhen: Retry.Conditions.always(),
+      maxRetries: 3,
+      delay: Retry.Delays.linear(5),
+    })
+    public async testWithLinearDelay(): Promise<number> {
+      return this.called();
+    }
+
+    @Retryable({
+      retryWhen: Retry.Conditions.always(),
+      maxRetries: 3,
+      delay: Retry.Delays.linear(5),
+      maxDelay: 10,
+    })
+    public async testWithLimitedLinearDelay(): Promise<number> {
+      return this.called();
+    }
+    @Retryable({
+      retryWhen: Retry.Conditions.always(),
+      maxRetries: 3,
+      delay: Retry.Delays.linear(5),
+      onFailedAttempt: onAttemptMock,
+    })
+    public async testWithOnFailedAttempt(): Promise<number> {
+      return this.called();
+    }
+
+    public called(): number {
+      return this.count++;
+      // method is intended to spy on
+    }
+  }
+
   let testClass: DummyClass;
 
   beforeEach(() => {
+    onAttemptMock.mockReset();
     testClass = new DummyClass();
   });
 
@@ -168,6 +180,13 @@ describe('Retryable', () => {
     expect(setTimeout).toHaveBeenNthCalledWith(1, expect.any(Function), 5);
     expect(setTimeout).toHaveBeenNthCalledWith(2, expect.any(Function), 10);
     expect(setTimeout).toHaveBeenNthCalledWith(3, expect.any(Function), 10);
+  });
+
+  it('invokes onAttempt after each attempt', async () => {
+    jest.spyOn(global, 'setTimeout');
+    await testClass.testWithOnFailedAttempt();
+
+    expect(onAttemptMock).toHaveBeenCalledTimes(4);
   });
 });
 
