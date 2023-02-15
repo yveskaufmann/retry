@@ -1,3 +1,5 @@
+import { AsyncLocalStorage } from 'async_hooks';
+
 import { Clazz } from './types';
 import { wait } from './wait';
 
@@ -168,6 +170,11 @@ class Conditions {
 }
 
 export class Retry {
+  private static readonly localAsyncStorage = new AsyncLocalStorage<{
+    attempt: number;
+    attemptsLeft: number;
+  }>();
+
   /**
    * List of built-in delays
    */
@@ -217,6 +224,11 @@ export class Retry {
     let result = null;
     let previousError: Error = null;
 
+    Retry.localAsyncStorage.enterWith({
+      attempt: 1,
+      attemptsLeft: maxRetries + 1,
+    });
+
     do {
       try {
         result = await operation();
@@ -233,6 +245,9 @@ export class Retry {
       if (typeof onFailedAttempt === 'function') {
         onFailedAttempt(attempts + 1, maxRetries - attempts, result, previousError);
       }
+
+      Retry.localAsyncStorage.getStore().attempt++;
+      Retry.localAsyncStorage.getStore().attemptsLeft--;
 
       attemptsLeft = attempts++ < maxRetries;
       shouldRetry = shouldRetry && attemptsLeft;
@@ -257,6 +272,42 @@ export class Retry {
     }
 
     return result;
+  }
+
+  /**
+   * @returns The number of the current attempt.
+   *
+   * The method is only invocateable inside Retryable operation
+   */
+  public static getAttempt(): number {
+    const store = Retry.localAsyncStorage.getStore();
+    if (!store) {
+      throw new Error('getAttempt can only be called in a retryable operation');
+    }
+    return store.attempt;
+  }
+
+  /**
+   * @returns The number of left attempts including the current attempt.
+   *   *
+   * The method is only invocateable inside Retryable operation
+   */
+  public static getAttemptLeft(): number {
+    const store = Retry.localAsyncStorage.getStore();
+    if (!store) {
+      throw new Error('getAttemptLeft can only be called in a retryable operation');
+    }
+    return store.attemptsLeft;
+  }
+
+  /**
+   * @returns true if the current attempt is the last one.
+   *
+   * The method is only invocateable inside Retryable operation
+   */
+  public static isLastAttempt(): boolean {
+    const attemptsLeft = Retry.getAttemptLeft();
+    return attemptsLeft <= 1;
   }
 }
 
