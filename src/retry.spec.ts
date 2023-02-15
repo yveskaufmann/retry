@@ -283,6 +283,37 @@ describe('Conditions', () => {
       expect(conditon(null, undefined)).toBeTruthy();
     });
   });
+
+  describe('custom - allows to aggregate custom conditions', () => {
+    it('returns a conditon builder', () => {
+      const custom = Retry.Conditions.custom();
+      expect(typeof custom).toBe('object');
+      expect(custom).toHaveProperty('toCondition');
+      expect(typeof custom.toCondition).toBe('function');
+    });
+
+    it('#toCondition returns a condition function which returns by default false', () => {
+      const condition = Retry.Conditions.custom().toCondition();
+      expect(condition(null, null)).toBe(false);
+    });
+
+    it('#onError allows to mark specific erros as retryable', () => {
+      const condition = Retry.Conditions.custom().onError(TypeError).toCondition();
+      expect(condition(null, new Error('retry me not'))).toBe(false);
+      expect(condition(null, new TypeError('retry me'))).toBe(true);
+    });
+
+    it('#onCondition allows to specifiy conditions for a retry', () => {
+      const condition = Retry.Conditions.custom()
+        .onCondition((result) => typeof result != 'number')
+        .onCondition((result) => result > 10)
+        .toCondition();
+
+      expect(condition(null, null)).toBe(true);
+      expect(condition(11, null)).toBe(true);
+      expect(condition(1, null)).toBe(false);
+    });
+  });
 });
 
 describe('MaxRetryAttemptsReached', () => {

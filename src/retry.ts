@@ -1,4 +1,9 @@
+import { Clazz } from './types';
 import { wait } from './wait';
+
+export interface RetryCondition<T = unknown> {
+  (result: T, err: Error): boolean;
+}
 
 /**
  * Options to configure a retriable operation.
@@ -121,6 +126,44 @@ class Conditions {
    */
   public onNullResult() {
     return (result: unknown, err: Error) => err == null && result == null;
+  }
+
+  public custom() {
+    return new (class {
+      #retryableErrors: Array<Clazz<Error>> = [];
+      #retyableConditions: Array<RetryCondition> = [];
+
+      onError(...err: Clazz<Error>[]): this {
+        this.#retryableErrors.push(...err);
+        return this;
+      }
+
+      onCondition(...condition: RetryCondition[]): this {
+        this.#retyableConditions.push(...condition);
+        return this;
+      }
+
+      toCondition() {
+        return (result: unknown, err: Error) => {
+          if (err) {
+            if (
+              this.#retryableErrors.length > 0 &&
+              this.#retryableErrors.some((retryableError) => err instanceof retryableError)
+            ) {
+              return true;
+            }
+          }
+
+          if (result !== undefined) {
+            if (this.#retyableConditions.length > 0 && this.#retyableConditions.some((cond) => cond(result, err))) {
+              return true;
+            }
+          }
+
+          return false;
+        };
+      }
+    })();
   }
 }
 
