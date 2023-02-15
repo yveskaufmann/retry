@@ -39,7 +39,20 @@ export interface RetryOptions<T> {
    * @returns True if a retry should be done.
    *
    */
-  retryWhen: (result: T, err: Error) => boolean;
+  retryWhen: RetryCondition;
+
+  /**
+   * Will be invoked after each failed attempt.
+   * An atempt is to be considered failed, if the `retryWhen` classify a returned error/return-values as retryable.
+
+   * @param attempt The number of the attempt.
+   * @param attemptsLeft The number of attempts left.
+
+   * @param result The returned value from the retryable operation, that is considered be a reason to perform a retry
+   * @param err The cause of the failed attempt
+   * @returns
+   */
+  onFailedAttempt?: (attempt: number, attemptsLeft: number, result: T, err: Error) => void;
 
   /**
    * Calculates the delay between retries in milliseconds.
@@ -148,6 +161,7 @@ export class Retry {
     throwMaxAttemptError,
     nameOfOperation,
     maxDelay,
+    onFailedAttempt,
   }: {
     operation: () => Promise<T>;
   } & RetryOptions<T>): Promise<T> {
@@ -171,6 +185,10 @@ export class Retry {
       shouldRetry = retryCondition(result, previousError);
       if (!shouldRetry) {
         break;
+      }
+
+      if (typeof onFailedAttempt === 'function') {
+        onFailedAttempt(attempts + 1, maxRetries - attempts, result, previousError);
       }
 
       attemptsLeft = attempts++ < maxRetries;
