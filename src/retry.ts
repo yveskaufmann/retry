@@ -130,23 +130,23 @@ class Conditions {
     return (result: unknown, err: Error) => err == null && result == null;
   }
 
-  public custom() {
+  public custom<C>() {
     return new (class {
       #retryableErrors: Array<Clazz<Error>> = [];
-      #retyableConditions: Array<RetryCondition> = [];
+      #retyableConditions: Array<RetryCondition<C>> = [];
 
       onError(...err: Clazz<Error>[]): this {
         this.#retryableErrors.push(...err);
         return this;
       }
 
-      onCondition(...condition: RetryCondition[]): this {
+      onCondition(...condition: RetryCondition<C>[]): this {
         this.#retyableConditions.push(...condition);
         return this;
       }
 
       toCondition() {
-        return (result: unknown, err: Error) => {
+        return (result: C, err: Error) => {
           if (err) {
             if (
               this.#retryableErrors.length > 0 &&

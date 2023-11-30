@@ -304,7 +304,7 @@ describe('Conditions', () => {
     });
 
     it('#onCondition allows to specifiy conditions for a retry', () => {
-      const condition = Retry.Conditions.custom()
+      const condition = Retry.Conditions.custom<number>()
         .onCondition((result) => typeof result != 'number')
         .onCondition((result) => result > 10)
         .toCondition();
