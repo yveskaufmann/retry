@@ -1,14 +1,19 @@
-# This workflow will release a new version of this package if a new github release was created.
+# This workflow will create a new release 
 
 name: Release - Workflow
 
 on:
-  release:
-    types:
-      - created
+  workflow_dispatch:
+
 jobs:
   release:
+    name: Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
 
     steps:
       - uses: actions/checkout@v4
@@ -19,18 +24,8 @@ jobs:
           cache: "npm"
       - run: make build
       - run: make test
-      - name: Sync package.json with new version
-        run: |
-          NEW_VERSION=${{ github.ref_name }}
-          CUR_VERSION=$(jq -r .version package.json)
-          NEW_VERSION=$(echo "${NEW_VERSION}" | sed 's/^v//')
-
-          echo "NEW VERSION: ${NEW_VERSION}"
-
-          if [[ NEW_VERSION != CUR_VERSION ]]; then 
-            jq --arg VERSION "${NEW_VERSION}" '.version = $VERSION' package.json > tmp.package.json
-            mv tmp.package.json package.json 
-          fi
-      - run: make release
+      - name: Release
+        run: npx semantic-release
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
