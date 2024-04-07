@@ -38,5 +38,5 @@ lint-fix:
 	npx eslint --fix -c .eslintrc.js .
 
 .PHONY: release
-release: build
-	npm publish --access public
+release:
+	gh workflow run release.yml
