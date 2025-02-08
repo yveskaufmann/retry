@@ -31,11 +31,11 @@ test-watch:
 
 .PHONY: lint
 lint:
-	npx eslint -c .eslintrc.js .
+	npx eslint  .
 
 .PHONY: lint-fix
 lint-fix:
-	npx eslint --fix -c .eslintrc.js .
+	npx eslint --fix.
 
 .PHONY: release
 release:
