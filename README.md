@@ -35,12 +35,13 @@ The `@Retryable` decorator supports both the legacy stage-2 and the modern stage
 }
 ```
 
-**Stage-3 decorators** (TC39, native in TypeScript 5.0+) — disable `experimentalDecorators` and set the compilation target to at least `ES2022` in your `tsconfig.json`:
+**Stage-3 decorators** (TC39, native in TypeScript 5.0+) — disable `experimentalDecorators` and `emitDecoratorMetadata`, and set the compilation target to at least `ES2022` in your `tsconfig.json`:
 
 ```json
 {
   "compilerOptions": {
     "experimentalDecorators": false,
+    "emitDecoratorMetadata": false,
     "target": "ES2022"
   }
 }
