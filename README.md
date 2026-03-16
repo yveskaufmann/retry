@@ -51,7 +51,7 @@ The limit of retries is given by `maxRetries`.
 When the retry limit is reached, the last return value is returned
 or the last thrown error is thrown.
 
-> NOTE: The `Retryable` annotation only works with methods that return promise like async methods.
+> **NOTE**: The `Retryable` annotation only works with methods that return promise like async methods.
 
 ```typescript
 class Service {
