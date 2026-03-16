@@ -1,6 +1,6 @@
 import { Retry, Retryable, MaxRetryAttemptsReached } from './index';
 
-describe('Retryable (stage-2)', () => {
+describe('Retryable', () => {
   const onAttemptMock = jest.fn();
 
   class DummyClass {
