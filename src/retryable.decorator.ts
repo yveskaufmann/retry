@@ -30,7 +30,7 @@ export function Retryable(options: RetryOptions<unknown>): any {
           ...options,
         });
       };
-    } else {
+    } else if (args.length === 2) {
       // Stage-3: (originalMethod, context)
       const [originalMethod, context] = args as [(...methodArgs: any[]) => any, ClassMethodDecoratorContext];
       return function (this: any, ...methodArgs: any[]) {
@@ -42,6 +42,9 @@ export function Retryable(options: RetryOptions<unknown>): any {
           ...options,
         });
       };
+    } else {
+      // Unsupported decorator arity: leave the original value unchanged
+      return;
     }
   };
 }
