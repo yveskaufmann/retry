@@ -3,13 +3,13 @@ import { Retry, RetryOptions } from './retry';
 /**
  * This method decorator marks a method as retriable.
  *
- * It uses the same options as @{link Retry#do} with the exception
+ * It uses the same options as {@link Retry#do} with the exception
  * that the operation is the annotated method.
  *
  * Supports both stage-2 (experimentalDecorators) and stage-3 (TC39) decorators.
  *
- * NOTE: That the annotated method have to be async or it should at least
- * return a promise.
+ * NOTE: The annotated method has to be async or must at least
+ * return a Promise.
  *
  * @param options Configuration of the retry options
  */
