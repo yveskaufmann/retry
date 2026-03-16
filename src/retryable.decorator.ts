@@ -13,14 +13,7 @@ import { Retry, RetryOptions } from './retry';
  *
  * @param options Configuration of the retry options
  */
-export function Retryable(options: RetryOptions<unknown>): MethodDecorator;
-export function Retryable(
-  options: RetryOptions<unknown>,
-): <This, Value extends (...args: any[]) => any>(
-  value: Value,
-  context: ClassMethodDecoratorContext<This, Value>,
-) => Value | ((this: This, ...args: Parameters<Value>) => ReturnType<Value>);
-export function Retryable(options: RetryOptions<unknown>) {
+export function Retryable(options: RetryOptions<unknown>): any {
   return function (...args: any[]) {
     if (args.length === 3) {
       // Stage-2: (target, propertyKey, descriptor)
