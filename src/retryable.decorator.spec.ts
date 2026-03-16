@@ -163,7 +163,7 @@ describe('Retryable', () => {
     expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 5);
   });
 
-  it('Do wait 5 * attemt time between retries if linear delay of 5 was used', async () => {
+  it('Do wait 5 * attempt time between retries if linear delay of 5 was used', async () => {
     jest.spyOn(global, 'setTimeout');
     await testClass.testWithLinearDelay();
 
