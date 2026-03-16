@@ -1,4 +1,5 @@
 import { Retry, MaxRetryAttemptsReached } from './retry';
+
 describe('Retry#do default parameters', () => {
   afterEach(() => {
     jest.useRealTimers();

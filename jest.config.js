@@ -6,7 +6,7 @@ module.exports = {
       displayName: 'stage-2',
       preset: 'ts-jest',
       testEnvironment: 'node',
-      testPathIgnorePatterns: ['dist', '\\.stage3\\.spec\\.ts$'],
+      testPathIgnorePatterns: ['dist'],
       transform: {
         '^.+\\.tsx?$': [
           'ts-jest',
@@ -20,7 +20,7 @@ module.exports = {
       displayName: 'stage-3',
       preset: 'ts-jest',
       testEnvironment: 'node',
-      testMatch: ['**/*.stage3.spec.ts'],
+      testMatch: ['**/retryable.decorator.spec.ts'],
       transform: {
         '^.+\\.tsx?$': [
           'ts-jest',
