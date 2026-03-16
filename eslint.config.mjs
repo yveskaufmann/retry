@@ -1,12 +1,11 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { fixupPluginRules } from '@eslint/compat';
 import { FlatCompat } from '@eslint/eslintrc';
 import js from '@eslint/js';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
-import _import from 'eslint-plugin-import';
+import importX from 'eslint-plugin-import-x';
 import jest from 'eslint-plugin-jest';
 import prettier from 'eslint-plugin-prettier';
 import unicorn from 'eslint-plugin-unicorn';
@@ -32,7 +31,7 @@ export default [
       jest,
       prettier,
       unicorn,
-      'import': fixupPluginRules(_import),
+      'import-x': importX,
     },
 
     languageOptions: {
@@ -115,7 +114,7 @@ export default [
         },
       ],
 
-      'import/order': [
+      'import-x/order': [
         'error',
         {
           'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object'],

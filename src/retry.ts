@@ -219,10 +219,10 @@ export class Retry {
     delay = delay ?? Retry.Delays.none();
 
     let attempts = 0;
-    let shouldRetry = false;
+    let shouldRetry: boolean;
     let attemptsLeft = true;
     let result = null;
-    let previousError: Error = null;
+    let previousError: Error;
 
     Retry.localAsyncStorage.enterWith({
       attempt: 1,
