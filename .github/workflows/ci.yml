@@ -34,4 +34,16 @@ jobs:
       - run: make build
       - run: make lint
       - run: make test
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@v5 
+
+  all-tests-passed:
+    runs-on: ubuntu-latest
+    needs: build
+    if: always() 
+    steps:
+      - name: Verify Matrix Results
+        run: |
+          if [[ "${{ needs.build.result }}" != "success" ]]; then
+            echo "One or more matrix jobs failed."
+            exit 1
+          fi
