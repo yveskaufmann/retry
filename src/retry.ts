@@ -339,32 +339,3 @@ export class MaxRetryAttemptsReached extends Error {
   }
 }
 
-/**
- * This method decorator marks a method as retriable.
- *
- * It uses the same options as @{link Retry#do} with the execption
- * that the operation is the annotated method.
- *
- * NOTE: That the annotated method have to be async or it should at east
- * return a promise.
- *
- * @param options Configuration of the retry options
- */
-export function Retryable(options: RetryOptions<unknown>): MethodDecorator {
-  return function (target, property, descriptor: TypedPropertyDescriptor<any>) {
-    if (typeof descriptor.value != 'function') {
-      return;
-    }
-
-    const originalMethod = descriptor.value;
-    const methodName = `${target.constructor.name}#${property.toString()}`;
-
-    descriptor.value = function (...args: any[]) {
-      return Retry.do({
-        operation: () => originalMethod.apply(this, args),
-        nameOfOperation: methodName,
-        ...options,
-      });
-    };
-  };
-}

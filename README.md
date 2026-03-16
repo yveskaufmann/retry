@@ -23,7 +23,9 @@ Node.js **20** or later is required. The following versions are actively support
 
 ### TypeScript decorators
 
-The `@Retryable` decorator relies on the **TC39 stage 2 draft** decorator specification (legacy experimentalDecorators). Enable it in your `tsconfig.json`:
+The `@Retryable` decorator supports both the legacy stage-2 and the modern stage-3 (TC39) decorator specifications.
+
+**Stage-2 decorators** (legacy `experimentalDecorators`) — enable in your `tsconfig.json`:
 
 ```json
 {
@@ -33,7 +35,17 @@ The `@Retryable` decorator relies on the **TC39 stage 2 draft** decorator specif
 }
 ```
 
-> **Note:** The TC39 stage 3 decorators introduced in TypeScript 5.0 are **not** supported. If you prefer to avoid `experimentalDecorators`, use the imperative `Retry.do()` API instead — it has no decorator dependency.
+**Stage-3 decorators** (TC39, native in TypeScript 5.0+) — disable `experimentalDecorators` and `emitDecoratorMetadata`, and set the compilation target to at least `ES2022` in your `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "experimentalDecorators": false,
+    "emitDecoratorMetadata": false,
+    "target": "ES2022"
+  }
+}
+```
 
 ## Installation
 
