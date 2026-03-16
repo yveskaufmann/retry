@@ -11,6 +11,16 @@ Utility for retrying promise based operations when a certain response or error i
 * Provides Class decorators to mark async functions as retirable.
 * Supports various backoff strategies: fixed, linear, exponential.
 
+## Requirements
+
+Node.js **20** or later is required. The following versions are actively supported and tested:
+
+| Node.js | Status |
+|---------|--------|
+| 20.x (LTS) | ✅ Supported |
+| 22.x (LTS) | ✅ Supported |
+| 24.x (Current) | ✅ Supported |
+
 ## Installation
 
 ```sh 
@@ -66,6 +76,7 @@ This utility can also be used with async functions:
 ## API Reference
 
 - [@yveskaufmann/retry - retry-utility](#yveskaufmannretry---retry-utility)
+  - [Requirements](#requirements)
   - [Installation](#installation)
   - [Usage](#usage)
   - [API Reference](#api-reference)
