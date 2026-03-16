@@ -119,7 +119,7 @@ describe('Retryable', () => {
   it('Annotated method is called as so many times as it was configured via the maxRetries parameter + 1', async () => {
     const calledSpy = jest.spyOn(testClass, 'called');
     await testClass.testAttemptsExceedsRetries();
-    expect(calledSpy).nthCalledWith(4);
+    expect(calledSpy).toHaveBeenCalledTimes(4);
   });
 
   it('result of the last attempt is returned if throwMaxAttemptError is false', async () => {
@@ -137,7 +137,7 @@ describe('Retryable', () => {
   it('MaxAttemptError is thrown if all attempts exceeded the retry-limit and if throwMaxAttemptError is true ', async () => {
     const calledSpy = jest.spyOn(testClass, 'called');
     await expect(testClass.testThrowMaxAttemptError()).rejects.toThrowError(MaxRetryAttemptsReached);
-    expect(calledSpy).nthCalledWith(4);
+    expect(calledSpy).toHaveBeenCalledTimes(4);
   });
 
   it('Do not retry if retryWhen returns false', async () => {
