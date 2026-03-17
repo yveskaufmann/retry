@@ -8,7 +8,7 @@ export interface RetryCondition<T = unknown> {
 }
 
 /**
- * Options to configure a retriable operation.
+ * Options to configure a retryable operation.
  */
 export interface RetryOptions<T> {
   /**
@@ -226,7 +226,7 @@ export class Retry {
 
     Retry.localAsyncStorage.enterWith({
       attempt: 1,
-      attemptsLeft: maxRetries + 1,
+      attemptsLeft: maxRetries,
     });
 
     do {
@@ -282,7 +282,7 @@ export class Retry {
   public static getAttempt(): number {
     const store = Retry.localAsyncStorage.getStore();
     if (!store) {
-      throw new Error('getAttempt can only be called in a retryable operation');
+      throw new Error('getAttempt can only be called within a retryable operation');
     }
     return store.attempt;
   }
@@ -306,6 +306,11 @@ export class Retry {
    * The method is only invocateable inside Retryable operation
    */
   public static isLastAttempt(): boolean {
+    const store = Retry.localAsyncStorage.getStore();
+    if (!store) {
+      throw new Error('isLastAttempt can only be called in a retryable operation');
+    }
+
     const attemptsLeft = Retry.getAttemptLeft();
     return attemptsLeft <= 1;
   }
@@ -338,4 +343,3 @@ export class MaxRetryAttemptsReached extends Error {
     }
   }
 }
-

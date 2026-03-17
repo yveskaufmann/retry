@@ -1,4 +1,5 @@
 import { Retry, MaxRetryAttemptsReached } from './retry';
+import { Retryable } from './retryable.decorator';
 
 describe('Retry#do default parameters', () => {
   afterEach(() => {
@@ -137,6 +138,98 @@ describe('MaxRetryAttemptsReached', () => {
       expect(withCause.message).toBe(`withCause Caused by thrown error: cause`);
       expect(withCause.cause).toBeDefined();
       expect(withCause.cause.message).toBe('cause');
+    });
+  });
+});
+
+describe('Attempt tracking', () => {
+  class AttemptDummy {
+    #invocations = 0;
+
+    @Retryable({
+      retryWhen: Retry.Conditions.always(),
+      maxRetries: 3,
+    })
+    async retryWithAllAttempts() {
+      return { attempts: Retry.getAttempt(), lastAttempt: Retry.isLastAttempt(), attemptsLeft: Retry.getAttemptLeft() };
+    }
+
+    @Retryable({
+      retryWhen: Retry.Conditions.custom()
+        .onCondition(() => false)
+        .toCondition(),
+      maxRetries: 3,
+    })
+    async retryWithNoAttempts() {
+      return { attempts: Retry.getAttempt(), lastAttempt: Retry.isLastAttempt(), attemptsLeft: Retry.getAttemptLeft() };
+    }
+
+    @Retryable({
+      retryWhen: Retry.Conditions.custom()
+        .onCondition((result: any) => typeof result?.attempts === 'number' && result?.attempts < 2)
+        .toCondition(),
+      maxRetries: 3,
+    })
+    async retryOnSecondeAttempt() {
+      if (this.#invocations++ < 1) {
+        return { attempts: -1, lastAttempt: false, attemptsLeft: 0 };
+      }
+
+      return { attempts: Retry.getAttempt(), lastAttempt: Retry.isLastAttempt(), attemptsLeft: Retry.getAttemptLeft() };
+    }
+  }
+
+  describe('getAttempt', () => {
+    it('throw error when not called in async context', async () => {
+      expect(Retry.getAttempt).toThrow('getAttempt can only be called within a retryable operation');
+    });
+
+    it('returns the attempts that were made before calling getAttempt', async () => {
+      const dummy = new AttemptDummy();
+      const { attempts } = await dummy.retryWithAllAttempts();
+      expect(attempts).toBe(4);
+
+      const { attempts: noAttempts } = await dummy.retryWithNoAttempts();
+      expect(noAttempts).toBe(1);
+
+      const { attempts: secondAttempt } = await dummy.retryOnSecondeAttempt();
+      expect(secondAttempt).toBe(2);
+    });
+  });
+
+  describe('isLastAttempt', () => {
+    it('throw error when not called in async context', async () => {
+      expect(Retry.isLastAttempt).toThrow('isLastAttempt can only be called in a retryable operation');
+    });
+
+    it('returns true if the current attempt is the last one', async () => {
+      const dummy = new AttemptDummy();
+      const { lastAttempt } = await dummy.retryWithAllAttempts();
+      expect(lastAttempt).toBe(true);
+    });
+
+    it('returns false if the current attempt is not the last one', async () => {
+      const dummy = new AttemptDummy();
+      const { lastAttempt } = await dummy.retryOnSecondeAttempt();
+      expect(lastAttempt).toBe(false);
+    });
+  });
+
+  describe('getAttemptLeft', () => {
+    it('throw error when not called in async context', async () => {
+      expect(Retry.getAttemptLeft).toThrow('getAttemptLeft can only be called in a retryable operation');
+    });
+
+    it('returns the attempts left including the current attempt', async () => {
+      const dummy = new AttemptDummy();
+      const { attemptsLeft } = await dummy.retryWithAllAttempts();
+      expect(attemptsLeft).toBe(0);
+
+      const { attemptsLeft: noAttemptsLeft } = await dummy.retryWithNoAttempts();
+      expect(noAttemptsLeft).toBe(3);
+
+      const { attemptsLeft: secondAttemptLeft } = await dummy.retryOnSecondeAttempt();
+      expect(secondAttemptLeft).toBe(2);
     });
   });
 });

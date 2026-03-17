@@ -116,6 +116,21 @@ describe('Retryable', () => {
     expect(descriptor.value).toEqual(value);
   });
 
+    it('The retryable annotation has no effect on classes or when called without parameters', () => {
+    const value = {};
+    const descriptor = {
+      value,
+    };
+
+    const result = Retryable({
+      retryWhen: Retry.Conditions.always(),
+      maxRetries: 3,
+    })(descriptor.value);
+
+    expect(result).toBeUndefined();
+    expect(descriptor.value).toEqual(value);
+  });
+
   it('Annotated method is called as so many times as it was configured via the maxRetries parameter + 1', async () => {
     const calledSpy = jest.spyOn(testClass, 'called');
     await testClass.testAttemptsExceedsRetries();
