@@ -1,2 +1,2 @@
-export { Retry, RetryOptions, MaxRetryAttemptsReached } from './retry';
+export { MaxRetryAttemptsReached, Retry, RetryOptions } from './retry';
 export { Retryable } from './retryable.decorator';

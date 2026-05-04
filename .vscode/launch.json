@@ -20,14 +20,10 @@
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**/*.js",
-        "${workspaceFolder}/node_modules/jest/**/*"
-      ],
+      "skipFiles": ["<node_internals>/**/*.js", "${workspaceFolder}/node_modules/jest/**/*"],
       "sourceMaps": true,
       "smartStep": false,
       "port": 9999
-    },
-
+    }
   ]
 }

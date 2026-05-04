@@ -1,4 +1,4 @@
-import { Retry, MaxRetryAttemptsReached } from './retry';
+import { MaxRetryAttemptsReached, Retry } from './retry';
 
 describe('Retry#do default parameters', () => {
   afterEach(() => {
@@ -48,7 +48,9 @@ describe('Delays', () => {
   });
 
   describe('#linear', () => {
-    it.each([-1, 0, 1, 10])('returns the delay: amountOfAttempts * delay [attempts=%d]', (attempts) => {
+    it.each([
+      -1, 0, 1, 10,
+    ])('returns the delay: amountOfAttempts * delay [attempts=%d]', (attempts) => {
       const delay = Retry.Delays.linear(5);
       expect(delay(attempts)).toBe(5 * attempts);
     });
@@ -69,33 +71,33 @@ describe('Delays', () => {
 
 describe('Conditions', () => {
   describe('onAnyError', () => {
-    it('Returns true if any error was specfied as argument', () => {
-      const conditon = Retry.Conditions.onAnyError();
-      expect(conditon(null, new Error())).toBeTruthy();
-      expect(conditon(null, null as any)).toBeFalsy();
-      expect(conditon(null, undefined as any)).toBeFalsy();
+    it('Returns true if any error was specified as argument', () => {
+      const condition = Retry.Conditions.onAnyError();
+      expect(condition(null, new Error())).toBeTruthy();
+      expect(condition(null, null as Error)).toBeFalsy();
+      expect(condition(null, undefined as Error)).toBeFalsy();
     });
   });
 
   describe('always', () => {
     it('Returns always true', () => {
-      const conditon = Retry.Conditions.always();
-      expect(conditon(null, new Error())).toBeTruthy();
-      expect(conditon(1, undefined)).toBeTruthy();
+      const condition = Retry.Conditions.always();
+      expect(condition(null, new Error())).toBeTruthy();
+      expect(condition(1, undefined)).toBeTruthy();
     });
   });
 
   describe('onNullResult', () => {
     it('Returns true if a null result was returned', () => {
-      const conditon = Retry.Conditions.onNullResult();
-      expect(conditon(null, new Error())).toBeFalsy();
-      expect(conditon(1, undefined)).toBeFalsy();
-      expect(conditon(null, undefined)).toBeTruthy();
+      const condition = Retry.Conditions.onNullResult();
+      expect(condition(null, new Error())).toBeFalsy();
+      expect(condition(1, undefined)).toBeFalsy();
+      expect(condition(null, undefined)).toBeTruthy();
     });
   });
 
   describe('custom - allows to aggregate custom conditions', () => {
-    it('returns a conditon builder', () => {
+    it('returns a condition builder', () => {
       const custom = Retry.Conditions.custom();
       expect(typeof custom).toBe('object');
       expect(custom).toHaveProperty('toCondition');
@@ -107,13 +109,13 @@ describe('Conditions', () => {
       expect(condition(null, null)).toBe(false);
     });
 
-    it('#onError allows to mark specific erros as retryable', () => {
+    it('#onError allows to mark specific errors as retryable', () => {
       const condition = Retry.Conditions.custom().onError(TypeError).toCondition();
       expect(condition(null, new Error('retry me not'))).toBe(false);
       expect(condition(null, new TypeError('retry me'))).toBe(true);
     });
 
-    it('#onCondition allows to specifiy conditions for a retry', () => {
+    it('#onCondition allows to specify conditions for a retry', () => {
       const condition = Retry.Conditions.custom<number>()
         .onCondition((result) => typeof result != 'number')
         .onCondition((result) => result > 10)
