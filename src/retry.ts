@@ -1,6 +1,6 @@
 import { AsyncLocalStorage } from 'async_hooks';
 
-import { Clazz } from './types';
+import { ErrorClass } from './types';
 import { wait } from './wait';
 
 export interface RetryCondition<T = unknown> {
@@ -8,7 +8,7 @@ export interface RetryCondition<T = unknown> {
 }
 
 /**
- * Options to configure a retriable operation.
+ * Options to configure a retryable operation.
  */
 export interface RetryOptions<T> {
   /**
@@ -46,11 +46,11 @@ export interface RetryOptions<T> {
    * @returns True if a retry should be done.
    *
    */
-  retryWhen: RetryCondition;
+  retryWhen: RetryCondition<T>;
 
   /**
    * Will be invoked after each failed attempt.
-   * An atempt is to be considered failed, if the `retryWhen` classify a returned error/return-values as retryable.
+   * An attempt is to be considered failed, if the `retryWhen` classify a returned error/return-values as retryable.
 
    * @param attempt The number of the attempt.
    * @param attemptsLeft The number of attempts left.
@@ -132,10 +132,10 @@ class Conditions {
 
   public custom<C>() {
     return new (class {
-      #retryableErrors: Array<Clazz<Error>> = [];
+      #retryableErrors: Array<ErrorClass> = [];
       #retyableConditions: Array<RetryCondition<C>> = [];
 
-      onError(...err: Clazz<Error>[]): this {
+      onError(...err: ErrorClass[]): this {
         this.#retryableErrors.push(...err);
         return this;
       }
@@ -157,7 +157,10 @@ class Conditions {
           }
 
           if (result !== undefined) {
-            if (this.#retyableConditions.length > 0 && this.#retyableConditions.some((cond) => cond(result, err))) {
+            if (
+              this.#retyableConditions.length > 0 &&
+              this.#retyableConditions.some((cond) => cond(result, err))
+            ) {
               return true;
             }
           }
@@ -338,4 +341,3 @@ export class MaxRetryAttemptsReached extends Error {
     }
   }
 }
-

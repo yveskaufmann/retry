@@ -1,4 +1,4 @@
-import { Retry, Retryable, MaxRetryAttemptsReached } from './index';
+import { MaxRetryAttemptsReached, Retry, Retryable } from './index';
 
 describe('Retryable', () => {
   const onAttemptMock = jest.fn();
@@ -28,12 +28,12 @@ describe('Retryable', () => {
     }
 
     @Retryable({
-      retryWhen(result: any, error?: Error) {
+      retryWhen(result: number, error?: Error) {
         return result < -1;
       },
       maxRetries: 3,
     })
-    public async testDontRetry(): Promise<number> {
+    public async testSuccessWithoutRetry(): Promise<number> {
       return this.called();
     }
 
@@ -111,7 +111,7 @@ describe('Retryable', () => {
     Retryable({
       retryWhen: Retry.Conditions.always(),
       maxRetries: 3,
-    })(null, '', descriptor);
+    })(null, '', descriptor as unknown);
 
     expect(descriptor.value).toEqual(value);
   });
@@ -130,19 +130,23 @@ describe('Retryable', () => {
   it('error of the last attempt is returned if throwMaxAttemptError is false', async () => {
     const calledSpy = jest.spyOn(testClass, 'called');
     const err = new Error('key');
-    (calledSpy as any).mockRejectedValue(err);
+    calledSpy.mockImplementation(() => {
+      throw err;
+    });
     await expect(testClass.testAttemptsExceedsRetries()).rejects.toThrow(err);
   });
 
   it('MaxAttemptError is thrown if all attempts exceeded the retry-limit and if throwMaxAttemptError is true ', async () => {
     const calledSpy = jest.spyOn(testClass, 'called');
-    await expect(testClass.testThrowMaxAttemptError()).rejects.toThrowError(MaxRetryAttemptsReached);
+    await expect(testClass.testThrowMaxAttemptError()).rejects.toThrowError(
+      MaxRetryAttemptsReached
+    );
     expect(calledSpy).toHaveBeenCalledTimes(4);
   });
 
   it('Do not retry if retryWhen returns false', async () => {
     const calledSpy = jest.spyOn(testClass, 'called');
-    await testClass.testDontRetry();
+    await testClass.testSuccessWithoutRetry();
     expect(calledSpy).nthCalledWith(1);
   });
 

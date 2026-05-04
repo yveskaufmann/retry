@@ -31,11 +31,18 @@ test-watch:
 
 .PHONY: lint
 lint:
-	npx eslint  .
-
+	@if [[ "$$CI" == "true" ]]; then \
+		npx biome ci; \
+	else \
+		npx biome check; \
+	fi
 .PHONY: lint-fix
 lint-fix:
-	npx eslint --fix.
+	npx biome check --fix
+
+.PHONY: format
+format:
+	npx biome format --write
 
 .PHONY: release
 release:
