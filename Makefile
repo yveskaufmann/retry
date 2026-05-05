@@ -15,11 +15,7 @@ clean:
 	rm -rf dist
 
 node_modules: package.json pnpm-lock.yaml
-ifeq ($(CI), true)
-	pnpm ci
-else
 	pnpm install
-endif
 
 .PHONY: test
 test:

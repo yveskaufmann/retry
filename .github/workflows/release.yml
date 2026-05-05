@@ -25,7 +25,7 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: "pnpm"
-      - run: pnpm ci
+      - run: pnpm install
       - run: make build
       - run: make test
       - name: Release
