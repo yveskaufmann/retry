@@ -17,15 +17,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10
       - uses: actions/setup-node@v6
         with:
           node-version-file: ".nvmrc"
-          cache: "npm"
+          cache: "pnpm"
+      - run: pnpm ci
       - run: make build
       - run: make test
       - name: Release
-        run: npx semantic-release
+        run: pnpm exec semantic-release
         env:
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-

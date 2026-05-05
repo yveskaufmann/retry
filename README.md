@@ -15,10 +15,10 @@ Utility for retrying promise based operations when a certain response or error i
 
 Node.js **20** or later is required. The following versions are actively supported and tested:
 
-| Node.js | Status |
-|---------|--------|
-| 20.x (LTS) | ✅ Supported |
-| 22.x (LTS) | ✅ Supported |
+| Node.js        | Status      |
+| -------------- | ----------- |
+| 20.x (LTS)     | ✅ Supported |
+| 22.x (LTS)     | ✅ Supported |
 | 24.x (Current) | ✅ Supported |
 
 ### TypeScript decorators
@@ -51,6 +51,8 @@ The `@Retryable` decorator supports both the legacy stage-2 and the modern stage
 
 ```sh 
 npm install @yveskaufmann/retry
+# or if you prefer pnpm
+pnpm add @yveskaufmann/retry
 ```
 
 ## Usage
@@ -103,6 +105,7 @@ This utility can also be used with async functions:
 
 - [@yveskaufmann/retry - retry-utility](#yveskaufmannretry---retry-utility)
   - [Requirements](#requirements)
+    - [TypeScript decorators](#typescript-decorators)
   - [Installation](#installation)
   - [Usage](#usage)
   - [API Reference](#api-reference)

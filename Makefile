@@ -5,44 +5,44 @@ SHELL := bash
 .PHONY: build
 build: node_modules
 ifeq ($(CI), true)
-	npx tsc -p tsconfig.build.json
+	pnpm exec tsc -p tsconfig.build.json
 else
-	npx tsc -p .
+	pnpm exec tsc -p .
 endif
 
 .PHONY: clean
 clean:
 	rm -rf dist
 
-node_modules: package.json package-lock.json
+node_modules: package.json pnpm-lock.yaml
 ifeq ($(CI), true)
-	npm ci
+	pnpm ci
 else
-	npm install
+	pnpm install
 endif
 
 .PHONY: test
 test:
-	npx vitest run
+	pnpm exec vitest run
 
 .PHONY: test-watch
 test-watch:
-	npx vitest
+	pnpm exec vitest
 
 .PHONY: lint
 lint:
 	@if [[ "$$CI" == "true" ]]; then \
-		npx biome ci; \
+		pnpm exec biome ci; \
 	else \
-		npx biome check; \
+		pnpm exec biome check; \
 	fi
 .PHONY: lint-fix
 lint-fix:
-	npx biome check --fix
+	pnpm exec biome check --fix
 
 .PHONY: format
 format:
-	npx biome format --write
+	pnpm exec biome format --write
 
 .PHONY: release
 release:
