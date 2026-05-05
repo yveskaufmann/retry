@@ -4,26 +4,13 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug Current Test",
-      "env": {
-        "LOG_LEVEL": "debug",
-        "NODE_ENV": "test"
-      },
-      "runtimeArgs": [
-        "--inspect-brk=9999",
-        "${workspaceFolder}/node_modules/.bin/jest",
-        "--testPathIgnorePatterns",
-        "--runInBand",
-        "--coverage",
-        "false",
-        "${relativeFile}"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "skipFiles": ["<node_internals>/**/*.js", "${workspaceFolder}/node_modules/jest/**/*"],
-      "sourceMaps": true,
-      "smartStep": false,
-      "port": 9999
+      "name": "Debug Current Test File",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "${relativeFile}"],
+      "smartStep": true,
+      "console": "integratedTerminal"
     }
   ]
 }

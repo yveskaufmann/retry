@@ -4,7 +4,7 @@
 .eslintrc.js
 .prettierrc.json
 tsconfig*.json
-jest.config.js 
+vitest.config.ts
 Makefile
 coverage 
 src

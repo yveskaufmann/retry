@@ -1,13 +1,15 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
 import { MaxRetryAttemptsReached, Retry } from './retry';
 
 describe('Retry#do default parameters', () => {
   afterEach(() => {
-    jest.useRealTimers();
-    jest.clearAllMocks();
+    vi.useRealTimers();
+    vi.clearAllMocks();
   });
 
   it('default maxRetries are 2 times', async () => {
-    const callback = jest.fn().mockResolvedValue(0);
+    const callback = vi.fn().mockResolvedValue(0);
     await Retry.do({
       operation: callback,
       retryWhen: Retry.Conditions.always(),
@@ -17,9 +19,9 @@ describe('Retry#do default parameters', () => {
   });
 
   it('default delay strategy is none', async () => {
-    jest.spyOn(global, 'setTimeout');
+    vi.spyOn(global, 'setTimeout');
 
-    const callback = jest.fn().mockResolvedValue(0);
+    const callback = vi.fn().mockResolvedValue(0);
 
     await Retry.do({
       operation: callback,

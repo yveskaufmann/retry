@@ -23,11 +23,11 @@ endif
 
 .PHONY: test
 test:
-	npx jest $(TEST_ARGS)
+	npx vitest run
 
 .PHONY: test-watch
 test-watch:
-	$(MAKE) test TEST_ARGS=--watch
+	npx vitest
 
 .PHONY: lint
 lint:

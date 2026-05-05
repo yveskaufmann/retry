@@ -101,7 +101,7 @@
         "useNamespaceKeyword": "error"
       }
     },
-    "includes": ["**", "!**/dist", "!**/node_modules", "!jest.config.js"]
+    "includes": ["**", "!**/dist", "!**/node_modules"]
   },
   "javascript": {
     "formatter": {
@@ -120,19 +120,7 @@
   "html": { "formatter": { "indentScriptAndStyle": false, "selfCloseVoidElements": "always" } },
   "overrides": [
     {
-      "includes": ["**/*.spec.ts", "**/*.test.ts"],
-      "javascript": {
-        "globals": [
-          "describe",
-          "expect",
-          "it",
-          "beforeAll",
-          "afterAll",
-          "beforeEach",
-          "afterEach",
-          "jest"
-        ]
-      }
+      "includes": ["**/*.spec.ts", "**/*.test.ts"]
     }
   ],
   "assist": { "enabled": true, "actions": { "source": { "organizeImports": "on" } } }
