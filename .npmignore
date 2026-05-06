@@ -2,7 +2,6 @@
 .github
 .editorconfig
 .eslintrc.js
-.prettierrc.json
 tsconfig*.json
 vitest.config.ts
 Makefile
