@@ -39,7 +39,7 @@ jobs:
       - run: make build
       - run: make lint
       - run: make test
-      - uses: codecov/codecov-action@v6
+      - uses: codecov/codecov-action@v7
 
   all-tests-passed:
     runs-on: ubuntu-latest
