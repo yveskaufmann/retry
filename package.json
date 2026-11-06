@@ -34,7 +34,7 @@
     "vitest": "^4.1.5"
   },
   "overrides": {
-    "handlebars": "4.7.9",
+    "handlebars": "4.7.10",
     "lodash-es": "4.18.1",
     "npm": "11.13.0",
     "micromatch": {
