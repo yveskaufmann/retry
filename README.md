@@ -13,13 +13,13 @@ Utility for retrying promise based operations when a certain response or error i
 
 ## Requirements
 
-Node.js **20** or later is required. The following versions are actively supported and tested:
+Node.js **22** or later is required. The following versions are actively supported and tested:
 
 | Node.js        | Status      |
 | -------------- | ----------- |
-| 20.x (LTS)     | ✅ Supported |
 | 22.x (LTS)     | ✅ Supported |
-| 24.x (Current) | ✅ Supported |
+| 24.x (LTS)     | ✅ Supported |
+| 26.x (LTS)     | ✅ Supported |
 
 ### TypeScript decorators
 
