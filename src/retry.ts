@@ -3,8 +3,21 @@ import { AsyncLocalStorage } from 'async_hooks';
 import { ErrorClass } from './types';
 import { wait } from './wait';
 
+/**
+ * RetryCondition defines a function that determines whether a retry should be performed
+ * based on the result of the operation and any error that was thrown.
+ */
 export interface RetryCondition<T = unknown> {
   (result: T, err: Error): boolean;
+}
+
+/**
+ * Builder interface for creating custom retry conditions.
+ */
+export interface CustomConditionBuilder<C> {
+  onError(...err: ErrorClass[]): this;
+  onCondition(...condition: RetryCondition<C>[]): this;
+  toCondition(): (result: C, err: Error) => boolean;
 }
 
 /**
@@ -130,8 +143,8 @@ class Conditions {
     return (result: unknown, err: Error) => err == null && result == null;
   }
 
-  public custom<C>() {
-    return new (class {
+  public custom<C>(): CustomConditionBuilder<C> {
+    return new (class CustomCondition {
       #retryableErrors: Array<ErrorClass> = [];
       #retyableConditions: Array<RetryCondition<C>> = [];
 
