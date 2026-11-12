@@ -30,7 +30,7 @@ describe('Retryable', () => {
     }
 
     @Retryable({
-      retryWhen(result: number, error?: Error) {
+      retryWhen(result: number, _error?: Error) {
         return result < -1;
       },
       maxRetries: 3,
@@ -140,9 +140,7 @@ describe('Retryable', () => {
 
   it('MaxAttemptError is thrown if all attempts exceeded the retry-limit and if throwMaxAttemptError is true ', async () => {
     const calledSpy = vi.spyOn(testClass, 'called');
-    await expect(testClass.testThrowMaxAttemptError()).rejects.toThrowError(
-      MaxRetryAttemptsReached
-    );
+    await expect(testClass.testThrowMaxAttemptError()).rejects.toThrowError(MaxRetryAttemptsReached);
     expect(calledSpy).toHaveBeenCalledTimes(4);
   });
 

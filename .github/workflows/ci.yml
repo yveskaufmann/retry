@@ -8,12 +8,12 @@ permissions:
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths-ignore:
       - README.md
 
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths-ignore:
       - README.md
 
@@ -23,7 +23,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [ 22.x, 24.x, 26.x ]
+        node-version: [22.x, 24.x, 26.x]
     steps:
       - uses: actions/checkout@v7
       - name: Install pnpm

@@ -1,15 +1,13 @@
-import { AsyncLocalStorage } from 'async_hooks';
+import { AsyncLocalStorage } from 'node:async_hooks';
 
-import { ErrorClass } from './types';
+import type { ErrorClass } from './types';
 import { wait } from './wait';
 
 /**
  * RetryCondition defines a function that determines whether a retry should be performed
  * based on the result of the operation and any error that was thrown.
  */
-export interface RetryCondition<T = unknown> {
-  (result: T, err: Error): boolean;
-}
+export type RetryCondition<T = unknown> = (result: T, err: Error) => boolean;
 
 /**
  * Builder interface for creating custom retry conditions.
@@ -93,14 +91,14 @@ class Delays {
    * No delay between retries
    */
   public none() {
-    return (attempts: number) => 0;
+    return (_attempts: number) => 0;
   }
 
   /**
    * Constant delay in milliseconds between retries.
    */
   public constant(delayInMs: number) {
-    return (attempts: number) => delayInMs;
+    return (_attempts: number) => delayInMs;
   }
 
   /**
@@ -114,7 +112,7 @@ class Delays {
    * Quadratic slope per attempt
    */
   public potential(delayInMs: number) {
-    return (attempts: number) => Math.pow(2, Math.max(attempts - 1, 0)) * delayInMs;
+    return (attempts: number) => 2 ** Math.max(attempts - 1, 0) * delayInMs;
   }
 }
 
@@ -126,14 +124,14 @@ class Conditions {
    * Retries a operation on any thrown error.
    */
   public onAnyError() {
-    return (result: unknown, err: Error) => err != null;
+    return (_result: unknown, err: Error) => err != null;
   }
 
   /**
    * Retries a operation in any case.
    */
   public always() {
-    return (result: unknown, err: Error) => true;
+    return (_result: unknown, _err: Error) => true;
   }
 
   /**
@@ -170,10 +168,7 @@ class Conditions {
           }
 
           if (result !== undefined) {
-            if (
-              this.#retyableConditions.length > 0 &&
-              this.#retyableConditions.some((cond) => cond(result, err))
-            ) {
+            if (this.#retyableConditions.length > 0 && this.#retyableConditions.some((cond) => cond(result, err))) {
               return true;
             }
           }

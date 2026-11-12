@@ -1,4 +1,4 @@
-import { Retry, RetryOptions } from './retry';
+import { Retry, type RetryOptions } from './retry';
 
 export type DecoratedMethod = (...args: unknown[]) => unknown;
 
@@ -39,6 +39,8 @@ export interface HybridDecoratorMethodDecorator {
  */
 export function Retryable<T>(options: RetryOptions<T>): HybridDecoratorMethodDecorator {
   return function (
+    /* biome-ignore lint/complexity/noBannedTypes: Hybrid decorator receives either a target Function for Stage 3 decorators
+       or an target object prototype for stage 2 decorators */
     target: object | Function,
     contextOrKey: string | symbol | ClassMemberDecoratorContext | undefined,
     descriptor?: PropertyDescriptor
@@ -46,10 +48,7 @@ export function Retryable<T>(options: RetryOptions<T>): HybridDecoratorMethodDec
     // Heuristic 1: New Standard Spec (TC39) Stage-3 Decorator: (value, context)
     const isStage3 =
       // biome-ignore lint/complexity/noArguments: We need paremeters strictly typed to define a stage 2-3 decorator type, so we have to use arguments.
-      arguments.length === 2 &&
-      typeof contextOrKey === 'object' &&
-      contextOrKey !== null &&
-      'kind' in contextOrKey;
+      arguments.length === 2 && typeof contextOrKey === 'object' && contextOrKey !== null && 'kind' in contextOrKey;
 
     // Stage-3: (target, context)
     if (isStage3 && target instanceof Function) {

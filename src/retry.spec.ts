@@ -50,13 +50,10 @@ describe('Delays', () => {
   });
 
   describe('#linear', () => {
-    it.each([-1, 0, 1, 10])(
-      'returns the delay: amountOfAttempts * delay [attempts=%d]',
-      (attempts) => {
-        const delay = Retry.Delays.linear(5);
-        expect(delay(attempts)).toBe(5 * attempts);
-      }
-    );
+    it.each([-1, 0, 1, 10])('returns the delay: amountOfAttempts * delay [attempts=%d]', (attempts) => {
+      const delay = Retry.Delays.linear(5);
+      expect(delay(attempts)).toBe(5 * attempts);
+    });
   });
 
   describe('#potential', () => {
@@ -120,7 +117,7 @@ describe('Conditions', () => {
 
     it('#onCondition allows to specify conditions for a retry', () => {
       const condition = Retry.Conditions.custom<number>()
-        .onCondition((result) => typeof result != 'number')
+        .onCondition((result) => typeof result !== 'number')
         .onCondition((result) => result > 10)
         .toCondition();
 
