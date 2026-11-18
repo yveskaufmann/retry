@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/yveskaufmann/retry#readme",
   "devDependencies": {
-    "@biomejs/biome": "2.6.7",
+    "@biomejs/biome": "2.6.8",
     "@types/node": "^26.6.6",
     "husky": "^9.1.7",
     "semantic-release": "^25.0.9",
