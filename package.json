@@ -36,7 +36,7 @@
     "@biomejs/biome": "2.6.8",
     "@types/node": "^26.6.6",
     "husky": "^9.1.7",
-    "semantic-release": "^25.0.9",
+    "semantic-release": "^26.0.1",
     "typescript": "^7.0.2",
     "vitest": "^5.1.0"
   },
